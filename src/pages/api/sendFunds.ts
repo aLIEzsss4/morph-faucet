@@ -54,7 +54,7 @@ type Data = {
 
 type Address = `0x${string}`;
 
-const amount = parseEther("0.0000002");
+const amount = parseEther("0.01");
 
 export default async function handler(
   req: NextApiRequest,
