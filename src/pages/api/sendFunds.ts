@@ -10,21 +10,21 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { wagmiAbi } from "./_abi";
 
-
 export const morphSepolia = /*#__PURE__*/ defineChain({
   id: 2710,
   name: 'Morph Sepolia',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  // @ts-ignore
   rpcUrls: {
     default: {
       http: ['https://rpc-testnet.morphl2.io'],
-      
     },
   },
   blockExplorers: {
     default: {
       name: 'Morph Testnet Explorer',
       url: 'https://explorer-testnet.morphl2.io',
+      // @ts-ignore
       apiUrl: 'https://explorer-api-testnet.morphl2.io/api',
     },
   },
@@ -75,6 +75,7 @@ export default async function handler(
 
   try {
     const tx = await walletClient.writeContract({
+      // @ts-ignore
       address: morphSepolia.contracts.contract.address,
       abi: wagmiAbi,
       functionName: "sendFunds",
@@ -86,6 +87,7 @@ export default async function handler(
       .status(200)
       .json({
         message: "Success!",
+        // @ts-ignore
         url: morphSepolia.blockExplorers.default.url + "/tx/" + tx,
       });
   } catch (error) {
