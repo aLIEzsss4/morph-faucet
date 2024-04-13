@@ -10,42 +10,42 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { wagmiAbi } from "./_abi";
 
-export const redstoneHoleSky = defineChain({
-  id: 17001,
-  name: "Redstone HoleSky",
-  network: "holesky",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
-  },
+
+export const morphSepolia = /*#__PURE__*/ defineChain({
+  id: 2710,
+  name: 'Morph Sepolia',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://rpc.holesky.redstone.xyz"],
-      webSocket: ["wss://rpc.holesky.redstone.xyz/ws"],
-    },
-    public: {
-      http: ["https://rpc.holesky.redstone.xyz"],
-      webSocket: ["wss://rpc.holesky.redstone.xyz/ws"],
+      http: ['https://rpc-testnet.morphl2.io'],
+      
     },
   },
   blockExplorers: {
-    default: { name: "Explorer", url: "https://explorer.holesky.redstone.xyz" },
-  },
-  contracts: {
-    contract: {
-      address: "0xE36D7af621241a91B89D22d0ffEE0C464A67f7FC",
-      blockCreated: 649879,
+    default: {
+      name: 'Morph Testnet Explorer',
+      url: 'https://explorer-testnet.morphl2.io',
+      apiUrl: 'https://explorer-api-testnet.morphl2.io/api',
     },
   },
-});
+  testnet: true,
+  contracts:{
+    contract:{
+      address:'0x319A7fd1a83b06105Ccfc483Ee0E20fAd65032Fd'
+    }
+  }
+})
+
+
 
 const walletClient = createWalletClient({
-  chain: redstoneHoleSky,
+  chain: morphSepolia,
   transport: http(),
 });
 
+
 const account = privateKeyToAccount(process.env.OWNER_PRIVATE_KEY as Address);
+
 
 type Data = {
   message: string;
@@ -54,13 +54,14 @@ type Data = {
 
 type Address = `0x${string}`;
 
-const amount = parseEther("0.01");
+const amount = parseEther(process.env.Ether as string);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   const recipient: Address = req.query.address as Address;
+
 
   if (recipient === undefined) {
     res.status(400).json({
@@ -74,7 +75,7 @@ export default async function handler(
 
   try {
     const tx = await walletClient.writeContract({
-      address: redstoneHoleSky.contracts.contract.address,
+      address: morphSepolia.contracts.contract.address,
       abi: wagmiAbi,
       functionName: "sendFunds",
       args: [recipient, amount],
@@ -85,7 +86,7 @@ export default async function handler(
       .status(200)
       .json({
         message: "Success!",
-        url: redstoneHoleSky.blockExplorers.default.url + "/tx/" + tx,
+        url: morphSepolia.blockExplorers.default.url + "/tx/" + tx,
       });
   } catch (error) {
     res.status(400).json({
