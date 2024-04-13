@@ -54,7 +54,7 @@ type Data = {
 
 type Address = `0x${string}`;
 
-const amount = parseEther(process.env.Ether as string);
+const amount = parseEther(process.env.Ether.toString() as string );
 
 export default async function handler(
   req: NextApiRequest,
